@@ -1,22 +1,29 @@
-from worldMethods.resizeWindow import *
 from datetime import datetime
-import win32gui
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import (QDialog, QDialogButtonBox, QPushButton, QLabel,
-                             QTextEdit, QRadioButton, QTextBrowser, QVBoxLayout,
-                             QHBoxLayout, QGridLayout, QSizePolicy, QGroupBox, QFormLayout, QLineEdit)
-from PyQt5.QtCore import Qt, pyqtSignal, QSize
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout
-from PyQt5.QtWidgets import (QApplication, QDialog, QPushButton, QLabel, QGroupBox,
-                             QVBoxLayout, QHBoxLayout, QFormLayout, QLineEdit,
-                             QRadioButton, QTextBrowser)
+
+from PyQt5.QtCore import QSize
 from PyQt5.QtCore import Qt, QPoint, pyqtSignal, pyqtSlot
-from PyQt5.QtGui import QMouseEvent
+from PyQt5.QtGui import QIcon, QMouseEvent
+from PyQt5.QtWidgets import (
+    QWidget,
+    QApplication,
+    QDialog,
+    QPushButton,
+    QLabel,
+    QGroupBox,
+    QVBoxLayout,
+    QHBoxLayout,
+    QFormLayout,
+    QLineEdit,
+    QRadioButton,
+    QTextBrowser)
+
 from getWindow import get_window_info
 from styles import *
+from worldMethods.resizeWindow import *
+
+
 class DraggableButton(QPushButton):
     released = pyqtSignal(QPoint)
-
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -44,7 +51,6 @@ class DraggableButton(QPushButton):
             self.move(self.initial_widget_global)
             self.show()  # 必须重新显示窗口
 
-
     def mouseMoveEvent(self, event: QMouseEvent):
         if self.drag_start_global and (event.buttons() & Qt.LeftButton):
             # 计算全局偏移量
@@ -55,7 +61,7 @@ class DraggableButton(QPushButton):
             self.move(new_global_pos)
         super().mouseMoveEvent(event)
 
-        #super().mouseMoveEvent(event)
+        # super().mouseMoveEvent(event)
 
     def mouseReleaseEvent(self, event: QMouseEvent):
         self.parent0.placeholder.hide()
@@ -86,7 +92,6 @@ class MyDialog(QDialog):
         main_layout = QHBoxLayout()
         left_layout = QVBoxLayout()
         right_layout = QVBoxLayout()
-
 
         # ======== 左侧区域优化排版 ========
         # 拖动控制组（使用GroupBox容器）
@@ -195,8 +200,8 @@ class MyDialog(QDialog):
         self.btn_clear.clicked.connect(self.close_window)
 
     def execute_method(self):
-        left,top = get_window_position(self.hwnd, self.logAdd)
-        set_window_size(self.hwnd,self.logAdd)
+        left, top = get_window_position(self.hwnd, self.logAdd)
+        set_window_size(self.hwnd, self.logAdd)
 
         # 这里可以添加你需要执行的代码
 
@@ -210,7 +215,8 @@ class MyDialog(QDialog):
 
         # 检查条件
         has_text = bool(text1 and text2)
-        radio_selected = self.radio1.isChecked() and not self.radio2.isChecked() and not self.radio3.isChecked()
+        radio_selected = self.radio1.isChecked(
+        ) and not self.radio2.isChecked() and not self.radio3.isChecked()
 
         # 设置按钮状态
         self.btn_refresh.setEnabled(has_text and radio_selected)
@@ -227,7 +233,7 @@ class MyDialog(QDialog):
 
         # 通过坐标获取坐标下的【窗口句柄】
         try:
-            self.hwnd,self.title= get_window_info(x, y)  # 请填写 x 和 y 坐标
+            self.hwnd, self.title = get_window_info(x, y)  # 请填写 x 和 y 坐标
             if self.hwnd is not None and self.title != '':
                 self.handle_edit.setText(str(self.hwnd))
                 self.name_edit.setText(self.title)
@@ -237,13 +243,14 @@ class MyDialog(QDialog):
         except Exception as e:
             self.logAdd(f"Error occurred : {e}")
 
-    def logAdd(self,txt):
+    def logAdd(self, txt):
         # 获取当前时间
         now = datetime.now()
         # 格式化为 "YYYY-MM-DD HH:MM:SS"
         formatted_time = now.strftime("%Y-%m-%d %H:%M:%S  ")
 
         self.log_browser.append(str(formatted_time) + txt)
+
 
 if __name__ == "__main__":
     import sys

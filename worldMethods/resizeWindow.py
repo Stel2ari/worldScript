@@ -81,8 +81,3 @@ def get_window_position(hwnd, logMethod):
 
     logMethod(f"获取窗口位置：{rect.left, rect.top}")
     return (rect.left, rect.top)
-
-
-
-
-

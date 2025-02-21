@@ -46,5 +46,3 @@ def get_window_info(x: int, y: int) -> tuple:
         title = ""
 
     return (root_hwnd, title)
-
-

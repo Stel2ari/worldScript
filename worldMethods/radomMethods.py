@@ -1,5 +1,7 @@
 import random
-def random_time(value_range=(300,500)):
+
+
+def random_time(value_range=(300, 500)):
     """
     生成单个区间的随机值
     参数：
@@ -8,6 +10,7 @@ def random_time(value_range=(300,500)):
         区间内的随机值
     """
     return random.randint(value_range[0], value_range[1])
+
 
 def random_position(range1, range2):
     """
@@ -23,8 +26,7 @@ def random_position(range1, range2):
     return (rand1, rand2)
 
 
-
 # 使用示例
 if __name__ == "__main__":
     print(random_time())
-    print(random_position((100,500),(545,854)))
+    print(random_position((100, 500), (545, 854)))
