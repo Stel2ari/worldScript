@@ -1,5 +1,6 @@
 from datetime import datetime
 
+
 from PyQt5.QtCore import QSize
 from PyQt5.QtCore import Qt, QPoint, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QIcon, QMouseEvent
@@ -20,7 +21,7 @@ from PyQt5.QtWidgets import (
 from getWindow import get_window_info
 from styles import *
 from worldMethods.resizeWindow import *
-
+from worldMethods.puHun import ph
 
 class DraggableButton(QPushButton):
     released = pyqtSignal(QPoint)
@@ -202,7 +203,7 @@ class MyDialog(QDialog):
     def execute_method(self):
         left, top = get_window_position(self.hwnd, self.logAdd)
         set_window_size(self.hwnd, self.logAdd)
-
+        ph(self.hwnd,left, top,self.logAdd)
         # 这里可以添加你需要执行的代码
 
     def close_window(self):

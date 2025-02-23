@@ -23,10 +23,8 @@ def random_position(range1, range2):
     """
     rand1 = random_time((range1[0], range1[1]))
     rand2 = random_time((range2[0], range2[1]))
+
     return (rand1, rand2)
 
 
-# 使用示例
-if __name__ == "__main__":
-    print(random_time())
-    print(random_position((100, 500), (545, 854)))
+
