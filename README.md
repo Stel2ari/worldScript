@@ -19,4 +19,4 @@
 5. 点击`开始`按钮执行脚本，通过`Ctrl + D` 可以停止进程
 
 ### 使用样例
-![](https://bucket-stel2ari.oss-cn-beijing.aliyuncs.com/2025-03-03%2001-13-19.mp4?Expires=1740936407&OSSAccessKeyId=TMP.3Kn9yXLikXon5d9rGvW7q2Wxaf3z1KsvMGbH66GgYXo9Z1ZBRq5QUxYnWFDcXqKm2UgiVyzUCZX19VzBHe5icC2rSMBKVU&Signature=GTI%2BnulTApc1Q48LjrDN%2BYS84Ek%3D)
+**[世界OL普混脚本WorldScript](#https://www.bilibili.com/video/BV1jE9aYbEVY/)**
