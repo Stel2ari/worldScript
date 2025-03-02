@@ -103,7 +103,7 @@ class MyDialog(QDialog):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("世界OL脚本")
-        self.resize(760, 439)
+        self.resize(900, 439)
         self.setup_ui()
         self.worker = None
         self.windoWord = None
