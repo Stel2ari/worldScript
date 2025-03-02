@@ -1,8 +1,8 @@
+import os
+import sys
 import threading
 import time
 import tkinter as tk
-import random
-
 import keyboard
 import pyautogui as pg
 from worldMethods.radomMethods import *
@@ -14,12 +14,16 @@ flag = True
 def callback(logMethod, ms):
     logMethod(f"随机等待 {ms} 毫秒")
 
+def get_resource_path(relative_path):
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.abspath("."), relative_path)
 
 def auto_skip(left, top, logMethod):
     time.sleep(1)
     find_skip = True
     screen_region = (left + 200, top + 620, 65, 48)  # 检测区域(left, top, width, height)
-    target_image = "worldMethods/puHunPngs/skipFight.png"  # 目标图片路径
+    target_image = get_resource_path('skipFight.png')# 目标图片路径
     check_interval = 0.5  # 检测间隔（秒）
     condidence = 0.8  # 匹配置信度（0-1）
 

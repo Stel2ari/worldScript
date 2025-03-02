@@ -1,8 +1,5 @@
+import os
 from datetime import datetime
-
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QTextBrowser
-import sys
-import time
 
 from PyQt5.QtCore import QSize, QTimer
 from PyQt5.QtCore import Qt, QPoint, pyqtSignal, pyqtSlot, QThread
@@ -127,7 +124,7 @@ class MyDialog(QDialog):
         self.placeholder.hide()
 
         self.drag_btn = DraggableButton(self)
-        self.drag_btn.setIcon(QIcon("aim.png"))  # 建议使用实际图标
+        self.drag_btn.setIcon(QIcon(self.get_resource_path("aim.png")))  # 建议使用实际图标
         self.drag_btn.setIconSize(QSize(40, 40))
         self.drag_btn.setFixedSize(60, 60)
         self.drag_btn.setStyleSheet(drag_btn_style)
@@ -315,6 +312,11 @@ class MyDialog(QDialog):
         """ 结束任务 """
         self.btn_start.setEnabled(True)
         self.btn_start.setStyleSheet(btn_able_style)
+
+    def get_resource_path(self,relative_path):
+        if hasattr(sys, '_MEIPASS'):
+            return os.path.join(sys._MEIPASS, relative_path)
+        return os.path.join(os.path.abspath("."), relative_path)
 
 
 if __name__ == "__main__":
