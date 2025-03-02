@@ -1,8 +1,11 @@
 from datetime import datetime
 
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QTextBrowser
+import sys
+import time
 
-from PyQt5.QtCore import QSize
-from PyQt5.QtCore import Qt, QPoint, pyqtSignal, pyqtSlot
+from PyQt5.QtCore import QSize, QTimer
+from PyQt5.QtCore import Qt, QPoint, pyqtSignal, pyqtSlot, QThread
 from PyQt5.QtGui import QIcon, QMouseEvent
 from PyQt5.QtWidgets import (
     QWidget,
@@ -22,6 +25,23 @@ from getWindow import get_window_info
 from styles import *
 from worldMethods.resizeWindow import *
 from worldMethods.puHun import ph
+
+
+class WorkerThread(QThread):
+    signal_output = pyqtSignal(str)  # 定义输出信号
+
+    def __init__(self, hwnd, logAdd):
+        super().__init__()
+        self.hwnd = hwnd
+        self.logAdd = logAdd
+
+    def run(self):
+        """ 线程主方法，执行耗时操作 """
+        # 在此处替换为实际耗时操作
+        left, top = get_window_position(self.hwnd, self.logAdd)
+        set_window_size(self.hwnd, self.logAdd)
+        ph(self.hwnd, left, top, self.logAdd)
+
 
 class DraggableButton(QPushButton):
     released = pyqtSignal(QPoint)
@@ -85,6 +105,7 @@ class MyDialog(QDialog):
         self.setWindowTitle("世界OL脚本")
         self.resize(760, 439)
         self.setup_ui()
+        self.worker = None
         self.windoWord = None
         self.windoName = None
 
@@ -157,16 +178,32 @@ class MyDialog(QDialog):
 
         option_group.setLayout(option_layout)
 
+        # 提示标签
+        stop_layout = QHBoxLayout()
+        # 初始化颜色列表
+        self.colors = ['red', 'blue', 'green', 'brown']
+        self.color_index = 0
+
+        # 设置定时器
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.changeColor)
+        self.timer.timeout.connect(self.scrollText)
+        self.timer.start(500)  # 每500毫秒改变一次颜色
+
+        self.label_stop = QLabel(' Ctrl + D 强制停止进程')
+        stop_layout.addWidget(self.label_stop)
+
         # 按钮组（底部对齐）
         btn_layout = QHBoxLayout()
-        self.btn_refresh = QPushButton("开始")
-        self.btn_refresh.setEnabled(False)
-        self.btn_refresh.setStyleSheet(btn_unable_style)
-        self.btn_refresh.setFixedSize(80, 30)
+        self.btn_start = QPushButton("开始")
+        self.btn_start.setEnabled(False)
+        self.btn_start.setStyleSheet(btn_unable_style)
+        self.btn_start.setFixedSize(80, 30)
         self.btn_clear = QPushButton("关闭")
         self.btn_clear.setFixedSize(80, 30)
         self.btn_clear.setStyleSheet(btn_able_style)
-        btn_layout.addWidget(self.btn_refresh)
+
+        btn_layout.addWidget(self.btn_start)
         btn_layout.addWidget(self.btn_clear)
         btn_layout.addStretch()
 
@@ -174,6 +211,7 @@ class MyDialog(QDialog):
         left_layout.addWidget(drag_group)
         left_layout.addWidget(info_group)
         left_layout.addWidget(option_group)
+        left_layout.addLayout(stop_layout)
         left_layout.addLayout(btn_layout)
         left_layout.setSpacing(20)
         left_layout.setContentsMargins(15, 15, 15, 15)
@@ -197,17 +235,28 @@ class MyDialog(QDialog):
         self.radio2.toggled.connect(self.check_conditions)
         self.radio3.toggled.connect(self.check_conditions)
         # 连接信号与槽
-        self.btn_refresh.clicked.connect(self.execute_method)
+        self.btn_start.clicked.connect(self.start_task)
+        # self.btn_start.clicked.connect(self.execute_method)
         self.btn_clear.clicked.connect(self.close_window)
 
     def execute_method(self):
         left, top = get_window_position(self.hwnd, self.logAdd)
         set_window_size(self.hwnd, self.logAdd)
-        ph(self.hwnd,left, top,self.logAdd)
+        ph(self.hwnd, left, top, self.logAdd)
         # 这里可以添加你需要执行的代码
+
+    def scrollText(self):
+        scroll_bar = self.log_browser.verticalScrollBar()
+        scroll_bar.setValue(scroll_bar.maximum())
+        self.log_browser.repaint()
 
     def close_window(self):
         self.close()
+
+    def changeColor(self):
+        # 更改 QLabel 的样式表来改变颜色
+        self.label_stop.setStyleSheet(f"QLabel {{ color: {self.colors[self.color_index % len(self.colors)]}; }}")
+        self.color_index += 1
 
     def check_conditions(self):
         # 获取输入内容（去除首尾空格）
@@ -220,11 +269,11 @@ class MyDialog(QDialog):
         ) and not self.radio2.isChecked() and not self.radio3.isChecked()
 
         # 设置按钮状态
-        self.btn_refresh.setEnabled(has_text and radio_selected)
+        self.btn_start.setEnabled(has_text and radio_selected)
         if has_text and radio_selected:
-            self.btn_refresh.setStyleSheet(btn_able_style)
+            self.btn_start.setStyleSheet(btn_able_style)
         else:
-            self.btn_refresh.setStyleSheet(btn_unable_style)
+            self.btn_start.setStyleSheet(btn_unable_style)
 
     @pyqtSlot(QPoint)
     def handle_drag_release(self, pos):
@@ -251,6 +300,21 @@ class MyDialog(QDialog):
         formatted_time = now.strftime("%Y-%m-%d %H:%M:%S  ")
 
         self.log_browser.append(str(formatted_time) + txt)
+
+    @pyqtSlot()
+    def start_task(self):
+        """ 启动任务 """
+        self.worker = WorkerThread(self.hwnd, self.logAdd)
+        self.worker.start()
+        self.btn_start.setEnabled(False)
+        self.btn_start.setStyleSheet(btn_unable_style)
+        self.stop_task()
+
+    @pyqtSlot()
+    def stop_task(self):
+        """ 结束任务 """
+        self.btn_start.setEnabled(True)
+        self.btn_start.setStyleSheet(btn_able_style)
 
 
 if __name__ == "__main__":
