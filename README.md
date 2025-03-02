@@ -20,3 +20,6 @@
 
 ### 使用样例
 **[世界OL普混脚本WorldScript](https://www.bilibili.com/video/BV1jE9aYbEVY)**
+
+https://github.com/user-attachments/assets/c0f4f867-a0fd-4a67-a463-4e26ae0f28d9
+
