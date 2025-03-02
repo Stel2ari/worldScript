@@ -23,7 +23,7 @@ def auto_skip(left, top, logMethod):
     time.sleep(1)
     find_skip = True
     screen_region = (left + 200, top + 620, 65, 48)  # 检测区域(left, top, width, height)
-    target_image = get_resource_path('skipFight.png')# 目标图片路径
+    target_image = get_resource_path('worldMethods\skipFight.png')# 目标图片路径
     check_interval = 0.5  # 检测间隔（秒）
     condidence = 0.8  # 匹配置信度（0-1）
 
@@ -67,6 +67,8 @@ def test(a):
 
 def ph(hwnd, left, top, logMethod):
     try:
+        global flag
+        flag = True
         a = 1
         thread = threading.Thread(target=test, args=(a,))
         thread.start()
