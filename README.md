@@ -19,4 +19,4 @@
 5. 点击`开始`按钮执行脚本，通过`Ctrl + D` 可以停止进程
 
 ### 使用样例
-**[世界OL普混脚本WorldScript](#https://www.bilibili.com/video/BV1jE9aYbEVY/)**
+**[世界OL普混脚本WorldScript](https://www.bilibili.com/video/BV1jE9aYbEVY)**
